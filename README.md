@@ -88,7 +88,62 @@ location /users/sign_out {
 }
 ```
 
+Also, uncomment/edit/add the following in gitlab.rb:  
+See [here](https://docs.gitlab.com/ee/administration/auth/jwt.html) for more details
+```rb
+gitlab_rails['omniauth_enabled'] = true
+gitlab_rails['omniauth_allow_single_sign_on'] = ['jwt']
+gitlab_rails['omniauth_block_auto_created_users'] = false
+gitlab_rails['omniauth_auto_link_ldap_user'] = true
+gitlab_rails['omniauth_providers'] = [{
+    name: 'jwt',
+    args: {
+        secret: 'secret',
+        algorithm: 'HS256',
+        uid_claim: 'uid',
+        required_claims: ['uid', 'email'],
+        info_maps: { name: 'uid', email: 'email' },
+        auth_url: 'https://gitlab.example.com/login',
+        valid_within: 3600
+    }
+}]
+```
+
+OH, I almost forgot; LDAP auth should be enabled:  
+See [here](https://docs.gitlab.com/ee/administration/auth/ldap.html) and [here](https://docs.gitlab.com/ee/administration/auth/how_to_configure_ldap_gitlab_ce/) for more info
+```ruby
+gitlab_rails['ldap_enabled'] = true
+gitlab_rails['ldap_servers'] = YAML.load_file('<path>/ldap_settings.yml')
+```
+
+ldap_settings.yml:
+```yaml
+main:
+    label: 'LDAP Config'
+    host: 'ldap.example.com'
+    port: 389
+    uid: 'uid'
+    method: 'tls'
+    bind_dn: 'uid=gitlabuser,cn=users,dc=example,dc=com'
+    password: 'password'
+    base: 'cn=users,dc=example,dc=com'
+    user_filter: '(memberOf=cn=gitlabusers,cn=groups,dc=example,dc=com)'
+    attributes:
+        username: ['uid']
+        email: ['mail']
+        name: 'givenName'
+        first_name: 'givenName'
+        last_name: 'sn'
+```
+
+Then run GitLab's reconfiguration script
+```bash
+gitlab-ctl reconfigure
+```
+
 ## TODO
+* [ ] **Login input validation**
+* [ ] Figure out how go modules work (and use go.mod)
 * [ ] Auto renew token?
 * [ ] Error/failure messages on login.html
 * [ ] Better login.html haha
