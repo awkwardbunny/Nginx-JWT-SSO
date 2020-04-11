@@ -143,7 +143,7 @@ gitlab-ctl reconfigure
 
 ## TODO
 * [ ] **Login input validation**
-* [ ] Figure out how go modules work (and use go.mod)
+* [x] Figure out how go modules work (and use go.mod)
 * [ ] Auto renew token?
 * [ ] Error/failure messages on login.html
 * [ ] Better login.html haha
