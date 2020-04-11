@@ -1,0 +1,14 @@
+{
+	"jwt_secret": "Z2V0cmVrdAo=",
+	"port": 8080,
+	"session_timeout": 3600,
+	"ldap_host": "ldap.example.com",
+	"ldap_port": 389,
+	"ldap_binddn": "uid=auth,cn=users,cn=accounts,dc=example,dc=com",
+	"ldap_bindpw": "password",
+	"ldap_ssl": true,
+	"ldap_base": "cn=users,cn=accounts,dc=example,dc=com",
+	"ldap_user_filter": "(uid=%s)",
+	"ldap_group_filter": "(memberUid=%s)",
+	"cookie_domain": "example.com"
+}
